@@ -798,6 +798,10 @@
             "nullable": true
           },
           "phoneNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "numberOfPurchases": {
             "type": "integer",
             "format": "int32"
           }

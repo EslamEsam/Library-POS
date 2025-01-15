@@ -54,7 +54,7 @@ namespace Library_POS.Controllers
                 return BadRequest();
             }
 
-            _bookRepository.UpdateAsync(book);
+            await _bookRepository.UpdateAsync(book);
 
             try
             {
@@ -80,7 +80,7 @@ namespace Library_POS.Controllers
         [HttpPost]
         public async Task<ActionResult<Book>> PostBook(Book book)
         {
-            _bookRepository.CreateAsync(book);
+            await _bookRepository.CreateAsync(book);
             await _bookRepository.SaveChangesAsync();
 
             return CreatedAtAction("GetBook", new { id = book.Id }, book);
@@ -96,7 +96,7 @@ namespace Library_POS.Controllers
                 return NotFound();
             }
 
-            _bookRepository.DeleteAsync(id);
+            await _bookRepository.DeleteAsync(id);
             await _bookRepository.SaveChangesAsync();
 
             return NoContent();

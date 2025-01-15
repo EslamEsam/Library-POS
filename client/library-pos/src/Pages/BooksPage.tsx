@@ -1,10 +1,9 @@
-import Book from '../components/Book'
-import React from 'react'
+import BookList from '../components/Books'
 
 const BooksPage = () => {
   return (
     <>
-    <Book/>
+    <BookList/>
     </>
   )
 }

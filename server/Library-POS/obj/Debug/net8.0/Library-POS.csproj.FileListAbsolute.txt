@@ -574,3 +574,9 @@ C:\Users\eslam\OneDrive\Desktop\LibraryPOS\server\Library-POS\obj\Debug\net8.0\r
 C:\Users\eslam\OneDrive\Desktop\LibraryPOS\server\Library-POS\obj\Debug\net8.0\Library-POS.pdb
 C:\Users\eslam\OneDrive\Desktop\LibraryPOS\server\Library-POS\obj\Debug\net8.0\Library-POS.genruntimeconfig.cache
 C:\Users\eslam\OneDrive\Desktop\LibraryPOS\server\Library-POS\obj\Debug\net8.0\ref\Library-POS.dll
+C:\Users\eslam\OneDrive\Desktop\LibraryPOS\server\Library-POS\obj\Debug\net8.0\Library-POS.sourcelink.json
+C:\Users\eslam\OneDrive\Desktop\LibraryPOS\server\Library-POS\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.Internal.dll
+C:\Users\eslam\OneDrive\Desktop\LibraryPOS\server\Library-POS\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+C:\Users\eslam\OneDrive\Desktop\LibraryPOS\server\Library-POS\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+C:\Users\eslam\OneDrive\Desktop\LibraryPOS\server\Library-POS\bin\Debug\net8.0\Microsoft.Extensions.Identity.Core.dll
+C:\Users\eslam\OneDrive\Desktop\LibraryPOS\server\Library-POS\bin\Debug\net8.0\Microsoft.Extensions.Identity.Stores.dll
