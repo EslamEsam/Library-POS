@@ -17,5 +17,9 @@ namespace Library_POS.Models
         [JsonIgnore]
         public virtual List<SaleDetail> SaleDetails { get; set; }
 
+        [ValidateNever]
+        [JsonIgnore]
+        public virtual List<Cart> Carts { get; set; }
+
     }
 }

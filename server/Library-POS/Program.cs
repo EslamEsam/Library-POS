@@ -1,7 +1,10 @@
 
+using System.Security.Claims;
 using Library_POS.Data;
+using Library_POS.Models;
 using Library_POS.Repositories;
 using Library_POS.Repositories.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library_POS
@@ -35,7 +38,38 @@ namespace Library_POS
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            // adding Identity
+            builder.Services.AddAuthorization();
+            builder.Services.AddIdentityApiEndpoints<User>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
+
             var app = builder.Build();
+
+            app.MapIdentityApi<User>();
+
+
+
+            app.MapPost("/api/logout", async (SignInManager<User> signInManager) =>
+            {
+                await signInManager.SignOutAsync();
+                return Results.Ok();
+            }).RequireAuthorization();
+
+            app.MapGet("pingauth" , (ClaimsPrincipal user) =>
+            {
+                var username = user.FindFirstValue(ClaimTypes.Email);
+                return Results.Json(new { Email = username });
+
+            }).RequireAuthorization();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -47,10 +81,12 @@ namespace Library_POS
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
+            app.UseSession();
 
             app.MapControllers();
 
+
+            
             app.Run();
         }
     }

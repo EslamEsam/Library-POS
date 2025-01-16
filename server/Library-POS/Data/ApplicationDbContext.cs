@@ -1,15 +1,17 @@
 ﻿using Library_POS.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Library_POS.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<User>
     {
         public DbSet<Book> books { get; set; }
         public DbSet<User> users { get; set; }
         public DbSet<Sale> sales { get; set; }
         public DbSet<SaleDetail> saleDetails { get; set; }
         public DbSet<Customer> customers { get; set; }
+        public DbSet<Cart> carts { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options): base(options)
         {
         }
@@ -49,6 +51,17 @@ namespace Library_POS.Data
                 .HasMany(c => c.Sales)
                 .WithOne(s => s.Customer)
                 .HasForeignKey(s => s.CustomerId);
+
+            modelBuilder.Entity<Cart>()
+                .HasOne(c => c.User)
+                .WithMany(u => u.Carts)
+                .HasForeignKey(c => c.UserId);
+                
+            
+            modelBuilder.Entity<Cart>()
+                .HasOne(c => c.Book)
+                .WithMany(b => b.Carts)
+                .HasForeignKey(c => c.BookId);
         }
 
     }

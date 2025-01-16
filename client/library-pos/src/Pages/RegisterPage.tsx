@@ -8,9 +8,10 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert"
 import { AlertCircle } from 'lucide-react'
 
-const LoginPage = () => {
+const RegisterPage = () => {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
+  const [confirmPassword, setConfirmPassword] = useState<string>('')
   const [error, setError] = useState<string>('')
   const setUser = UsersStore((state) => state.setUser)
 
@@ -22,20 +23,26 @@ const LoginPage = () => {
       setEmail(value)
     } else if (name === 'password') {
       setPassword(value)
+    } else if (name === 'confirmPassword') {
+      setConfirmPassword(value)
     }
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setError('')
 
-    if (!email || !password) {
-      setError('Please enter both email and password')
+    if (!email || !password || !confirmPassword) {
+      setError('Please fill in all fields')
+      return
+    }
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match')
       return
     }
 
     try {
-      const response = await fetch('/api/users/login', {
+      const response = await fetch('/api/users/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -47,14 +54,14 @@ const LoginPage = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to login')
+        console.log('Failed to register')
       }
 
       const user = await response.json()
-      setUser(user)
+      console.log(user)
       navigate('/')
     } catch (err) {
-      setError('Login failed. Please check your credentials and try again.')
+      setError('Registration failed. Please try again.')
     }
   }
 
@@ -62,8 +69,8 @@ const LoginPage = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">Welcome Back</CardTitle>
-          <CardDescription className="text-center">Please enter your details to log in</CardDescription>
+          <CardTitle className="text-2xl font-bold text-center">Create an Account</CardTitle>
+          <CardDescription className="text-center">Enter your details to register</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
@@ -92,6 +99,18 @@ const LoginPage = () => {
                   required
                 />
               </div>
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  placeholder="Confirm your password"
+                  value={confirmPassword}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
             </div>
             {error && (
               <Alert variant="destructive" className="mt-4">
@@ -101,15 +120,15 @@ const LoginPage = () => {
               </Alert>
             )}
             <Button type="submit" className="w-full mt-6">
-              Log In
+              Register
             </Button>
           </form>
         </CardContent>
         <CardFooter className="flex justify-center">
           <p className="text-sm text-gray-600">
-            Don't have an account?{' '}
-            <Button variant="link" className="p-0" onClick={() => navigate('/register')}>
-              Register here
+            Already have an account?{' '}
+            <Button variant="link" className="p-0" onClick={() => navigate('/login')}>
+              Login here
             </Button>
           </p>
         </CardFooter>
@@ -118,5 +137,5 @@ const LoginPage = () => {
   )
 }
 
-export default LoginPage
+export default RegisterPage
 

@@ -1,9 +1,22 @@
 import { useState } from 'react'
-import {Link} from 'react-router-dom' 
+import { Link } from 'react-router-dom' 
 import { Button } from "../components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../components/ui/dropdown-menu"
+import { ChevronDown } from 'lucide-react'
+import UsersStore from '../store/UsersStore'
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const user = UsersStore((state) => state.user);
+  const clearUser = UsersStore((state) => state.logout);
+
+  const isLoggedIn = !!user?.userId;
+  const isAdmin = user?.isAdmin;
 
   return (
     <nav className="bg-white shadow-md">
@@ -17,20 +30,51 @@ export default function Navbar() {
               <Link to="/books" className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 hover:text-gray-700">
                 Books
               </Link>
-              <Link to="/customers" className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 hover:text-gray-700">
-                Customers
-              </Link>
-              <Link to="/users" className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 hover:text-gray-700">
-                Users
-              </Link>
-              <Link to="/sales" className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 hover:text-gray-700">
-                Sales
-              </Link>
+              {isLoggedIn && (
+                <>
+                  <Link to="/customers" className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 hover:text-gray-700">
+                    Customers
+                  </Link>
+                  <Link to="/sales" className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 hover:text-gray-700">
+                    Sales
+                  </Link>
+                </>
+              )}
+              {isAdmin && (
+                <Link to="/users" className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 hover:text-gray-700">
+                  Users
+                </Link>
+              )}
             </div>
           </div>
           <div className="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
-            <Button variant="outline">Login</Button>
-            <Button>Sign Up</Button>
+            {isLoggedIn ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="flex items-center space-x-2">
+                    <span>Hi, {user.email}</span>
+                    <ChevronDown className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem>
+                    <Link to="/checkout" className="w-full">Checkout</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={clearUser}>
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <Link to="/login">
+                  <Button variant="outline">Login</Button>
+                </Link>
+                <Link to="/register">
+                  <Button>Sign Up</Button>
+                </Link>
+              </>
+            )}
           </div>
           <div className="flex items-center sm:hidden">
             <button 
@@ -74,17 +118,47 @@ export default function Navbar() {
           <Link to="/books" className="block pl-3 pr-4 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
             Books
           </Link>
-          <Link to="/customers" className="block pl-3 pr-4 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-            Customers
-          </Link>
-          <Link to="/users" className="block pl-3 pr-4 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-            Users
-          </Link>
+          {isLoggedIn && (
+            <>
+              <Link to="/customers" className="block pl-3 pr-4 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                Customers
+              </Link>
+              <Link to="/sales" className="block pl-3 pr-4 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                Sales
+              </Link>
+            </>
+          )}
+          {isAdmin && (
+            <Link to="/users" className="block pl-3 pr-4 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+              Users
+            </Link>
+          )}
         </div>
         <div className="pt-4 pb-3 border-t border-gray-200">
           <div className="space-y-1">
-            <Button variant="outline" className="w-full justify-center">Login</Button>
-            <Button className="w-full justify-center">Sign Up</Button>
+            {isLoggedIn ? (
+              <>
+                <p className="block px-4 py-2 text-base font-medium text-gray-500">Hi, {user.email}</p>
+                <Link to="/checkout" className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100">
+                  Checkout
+                </Link>
+                <button
+                  onClick={clearUser}
+                  className="block w-full text-left px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login">
+                  <Button variant="outline" className="w-full justify-center">Login</Button>
+                </Link>
+                <Link to="/register">
+                  <Button className="w-full justify-center">Sign Up</Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>

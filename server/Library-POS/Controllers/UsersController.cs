@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Library_POS.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Library_POS.Data;
-using Library_POS.Models;
-using Library_POS.Repositories.Interfaces;
+using System.Security.Claims;
 
 namespace Library_POS.Controllers
 {
@@ -15,96 +11,68 @@ namespace Library_POS.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly IUserRepository _userRepository;
+        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<User> _userManager; 
 
-        public UsersController(IUserRepository usersRepository)
+        public UsersController(SignInManager<User> signInManager, UserManager<User> userManager) 
         {
-            _userRepository = usersRepository;
+            _signInManager = signInManager;
+            _userManager = userManager; 
         }
 
-        // GET: api/Users
-        [HttpGet]
-        public async Task<IEnumerable<User>> Getusers()
+        [HttpPost("login")]
+        public async Task<ActionResult> Login([FromBody] LoginRequest login)
         {
-            return await _userRepository.GetAllAsync();
-        }
-
-        // GET: api/Users/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
-        {
-            var user = await _userRepository.GetByIdAsync(id);
-
-            if (user == null)
+            if (ModelState.IsValid)
             {
-                return NotFound();
-            }
-
-            return user;
-        }
-
-        // PUT: api/Users/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
-        {
-            if (id != user.Id)
-            {
-                return BadRequest();
-            }
-
-            await _userRepository.UpdateAsync(user);
-
-            try
-            {
-                await _userRepository.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id))
+                var result = await _signInManager.PasswordSignInAsync(login.Email, login.Password, false,false);
+                if (result.Succeeded)
                 {
-                    return NotFound();
+                    var user = await _userManager.FindByEmailAsync(login.Email);
+                    var userId = user.Id;
+                    var isAdmin = user.IsAdmin;
+                    HttpContext.Session.SetString("UserId", userId);
+                    HttpContext.Session.SetString("IsAdmin", isAdmin.ToString());
+                    HttpContext.Session.SetString("Email", login.Email);
+                    return Ok(new { userId, isAdmin, login.Email});
                 }
                 else
                 {
-                    throw;
+                    return Unauthorized("Invalid login attempt");
                 }
             }
-
-            return NoContent();
-        }
-
-        // POST: api/Users
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
-        {
-            await _userRepository.CreateAsync(user);
-            await _userRepository.SaveChangesAsync();
-
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
-        }
-
-        // DELETE: api/Users/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
-        {
-            var user = await _userRepository.GetByIdAsync(id);
-            if (user == null)
+            else
             {
-                return NotFound();
+                return BadRequest("Invalid login attempt");
             }
-
-            await _userRepository.DeleteAsync(id);
-            await _userRepository.SaveChangesAsync();
-
-            return NoContent();
         }
 
-        private bool UserExists(int id)
+        [HttpPost("register")]
+        public async Task<ActionResult> Register([FromBody] RegisterRequest register)
         {
-            var user = _userRepository.GetByIdAsync(id);
-            return user != null;
+            if (ModelState.IsValid)
+            {
+                var user = new User
+                {
+                    UserName = register.Email,
+                    Email = register.Email,
+                };
+                var result = await _userManager.CreateAsync(user, register.Password);
+                if (result.Succeeded)
+                {
+                    return Ok("User created successfully");
+                }
+                else
+                {
+                    return BadRequest(result);
+                }
+            }
+            else
+            {
+                return BadRequest("Invalid registration attempt2");
+            }
         }
+
     }
+
 }

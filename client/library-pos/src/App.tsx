@@ -1,12 +1,13 @@
 import { Route,createBrowserRouter,createRoutesFromElements,RouterProvider} from 'react-router-dom'
 import MainLayout from './layouts/MainLayout';
 import BooksPage from './Pages/BooksPage';
-import LoginPage from './Pages/loginPage';
+import LoginPage from './Pages/LoginPage';
 import {BookPage} from './Pages/BookPage';
 import NotFoundPage from './Pages/NotFoundPage';
 import UsersPage from './Pages/UsersPage';
 import CustomersPage from './Pages/CustomersPage';
 import SalesPage from './Pages/SalesPage';
+import RegisterPage from './Pages/RegisterPage';
 
 function App() {
   
@@ -20,6 +21,7 @@ function App() {
        <Route path='customers' element={<CustomersPage/>} />
        <Route path='sales' element={<SalesPage/>} />
        <Route path='login' element={<LoginPage/>} />
+       <Route path='register' element={<RegisterPage/>} />
        <Route path='*'  element={<NotFoundPage/>} />
       </Route>
     )
