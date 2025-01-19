@@ -18,6 +18,7 @@ namespace Library_POS.Repositories
         public async Task CreateAsync(T entity)
         {
             await _dbSet.AddAsync(entity);
+
         }
 
         public async Task DeleteAsync(int id)
@@ -48,6 +49,11 @@ namespace Library_POS.Repositories
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
+        }
+
+        public async Task CreateAllAsync(IEnumerable<T> entities)
+        {
+            await _dbSet.AddRangeAsync(entities);
         }
     }
 }

@@ -8,6 +8,10 @@ namespace Library_POS.Models
         public int Id { get; set; }
         public string UserId { get; set; }
         public int BookId { get; set; }
+        public int BookQuantity { get; set; }
+        public string BookTitle { get; set; }
+        public int BookPrice { get; set; }
+
 
 
         [ValidateNever]

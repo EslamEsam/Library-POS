@@ -8513,9 +8513,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\eslam\\OneDrive\\Desktop\\LibraryPOS\\server\\Library-POS\\Library-POS.csproj",
-      "projectName": "Library-POS",
-      "projectPath": "C:\\Users\\eslam\\OneDrive\\Desktop\\LibraryPOS\\server\\Library-POS\\Library-POS.csproj",
+      "projectUniqueName": "C:\\Users\\eslam\\OneDrive\\Desktop\\LibraryPOS\\server\\Library-POS\\Souq El Kotob.csproj",
+      "projectName": "Souq El Kotob",
+      "projectPath": "C:\\Users\\eslam\\OneDrive\\Desktop\\LibraryPOS\\server\\Library-POS\\Souq El Kotob.csproj",
       "packagesPath": "C:\\Users\\eslam\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\eslam\\OneDrive\\Desktop\\LibraryPOS\\server\\Library-POS\\obj\\",
       "projectStyle": "PackageReference",

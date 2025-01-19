@@ -17,5 +17,10 @@ namespace Library_POS.Repositories
             return _dbSet;
         }
 
+        public async Task<IEnumerable<Sale>> UserPurchases(string userId)
+        {
+            return await _context.sales.Include(s => s.Customer).Include(s => s.SaleDetails).ThenInclude(sd => sd.Book).Where(s => s.UserId == userId).ToListAsync();
+           
+        }
     }
 }

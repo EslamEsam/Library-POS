@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
 import { Input } from "../components/ui/input";
@@ -10,26 +9,25 @@ import {
   SelectValue,
 } from "../components/ui/select";
 import { getBooks } from "../API/BooksAPI";
+import { addToCart, getCartByUserId } from "../API/CartAPI"; // Import the addToCart method
 import { useEffect, useState } from "react";
-
-interface Book {
-  id: number;
-  title: string;
-  genre: string;
-  author: string;
-  year: number;
-  quantity: number;
-  price: number;
-}
+import CartStore from "../Stores/CartStore";
+import UserStore from "../Stores/UserStore";
+import {Link} from 'react-router-dom';
+import { IBook } from "../Interfaces/IBook";
 
 export default function BookList() {
-  const [books, setBooks] = useState<Book[] | null>(null);
-  const [filteredBooks, setFilteredBooks] = useState<Book[] | null>(null);
+  const [books, setBooks] = useState<IBook[] | null>(null);
+  const [filteredBooks, setFilteredBooks] = useState<IBook[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [genreFilter, setGenreFilter] = useState("all");
   const [authorFilter, setAuthorFilter] = useState("all");
   const [yearFilter, setYearFilter] = useState("all");
+
+  const setCart = CartStore((state) => state.setCart)
+  const user = UserStore((state) => state.user)
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -39,12 +37,15 @@ export default function BookList() {
         setBooks(data);
         setFilteredBooks(data);
         setIsLoading(false);
+        if (user && user.isAdmin !== undefined) {
+          setIsAdmin(user.isAdmin);
+        }
       } catch (err) {
         console.log("Failed to load books. Please try again later.", err);
       }
     };
     fetchBooks();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     if (books) {
@@ -64,6 +65,32 @@ export default function BookList() {
     setGenreFilter("all");
     setAuthorFilter("all");
     setYearFilter("all");
+  };
+
+  // New function to handle adding a book to the cart
+  const handleAddToCart = async (book: IBook) => {
+    console.log(user.userId)
+    try {
+      if (book.id !== undefined) {
+        const newItem = {
+          "userId": user.userId,
+          "bookId": book.id,
+          "bookQuantity": 1,
+          "bookTitle": book.title,
+          "bookPrice": book.price
+        }
+        const response = await addToCart(newItem);
+      console.log(response);
+      if (response.ok) {
+        console.log("IBook added to cart successfully");
+        const newcart = await getCartByUserId(user.userId)
+        setCart(newcart)
+        console.log(newcart)
+        } 
+      }
+    } catch (error) {
+      console.error("Error adding book to cart:", error);
+    }
   };
 
   if (isLoading) {
@@ -145,6 +172,13 @@ export default function BookList() {
         >
           Reset Filters
         </Button>
+        {isAdmin && (
+          <Link to="/add-book">
+            <Button variant="outline" className="w-full md:w-auto">
+              Add Book
+            </Button>
+          </Link>
+        )}
       </div>
       {filteredBooks && filteredBooks.length === 0 ? (
         <div className="text-center py-8">
@@ -152,7 +186,7 @@ export default function BookList() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredBooks?.map((book: Book) => (
+          {filteredBooks?.map((book: IBook) => (
             <Card key={book.id} className="flex flex-col justify-between">
               <CardContent className="p-6">
                 <h2 className="text-xl font-semibold mb-2">{book.title}</h2>
@@ -173,9 +207,17 @@ export default function BookList() {
                 <p className="text-lg font-bold mt-2">${book.price.toFixed(2)}</p>
               </CardContent>
               <div className="p-6 pt-0">
-                <Link to={`/books/${book.id}`}>
-                  <Button className="w-full">View Details</Button>
-                </Link>
+                {user ? (
+                  <Button 
+                    className="w-full" 
+                    onClick={() => handleAddToCart(book)}
+                    disabled={book.quantity === 0}
+                  >
+                    Add to Cart
+                  </Button>
+                ) : (
+                  <p className="text-center text-gray-500">Log in to add to cart</p>
+                )}
               </div>
             </Card>
           ))}

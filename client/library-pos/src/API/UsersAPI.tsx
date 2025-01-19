@@ -1,19 +1,15 @@
 // all crud operations are done here for the users
 
-interface User {
-    username: string
-    phoneNumber: string
-    isAdmin: boolean
-}
+import { IUser } from "../Interfaces/IUser"
 
 // get all users
-export const getUsers = async (): Promise<User[]> => {
+export const getUsers = async (): Promise<IUser[]> => {
     try {
         const response = await fetch('/api/users')
         if (!response.ok) {
             throw new Error('Failed to fetch users')
         }
-        const data: User[] = await response.json()
+        const data: IUser[] = await response.json()
         return data
     }
     catch (error) {
@@ -23,61 +19,25 @@ export const getUsers = async (): Promise<User[]> => {
 }
 
 // get user by id
-export const getUserById = async (id: number): Promise<User | null> => {
+export const getUserById = async (userId: string): Promise<IUser | null> => {
     try {
-        const response = await fetch(`/api/users/${id}`)
+        const response = await fetch(`/api/users/${userId}`)
         if (!response.ok) {
-            throw new Error('Failed to fetch customer')
+            throw new Error('Failed to fetch user')
         }
-        const data: User = await response.json()
+        const data: IUser = await response.json()
         return data
     }
     catch (error) {
-        console.error('Error fetching customer:', error)
+        console.error('Error fetching user:', error)
         throw error
     }
 }
 
-// update user
-export const updateUser = async (user: User): Promise<void> => {
+// register user
+export const registerUser = async (user: IUser): Promise<Response> => {
     try {
-        const response = await fetch(`/api/users/${user.username}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(user)
-        })
-        if (!response.ok) {
-            throw new Error('Failed to update user')
-        }
-    }
-    catch (error) {
-        console.error('Error updating user:', error)
-        throw error
-    }
-}
-
-// delete user
-export const deleteUser = async (id: number): Promise<void> => {
-    try {
-        const response = await fetch(`/api/users/${id}`, {
-            method: 'DELETE'
-        })
-        if (!response.ok) {
-            throw new Error('Failed to delete user')
-        }
-    }
-    catch (error) {
-        console.error('Error deleting user:', error)
-        throw error
-    }
-}
-
-// create user
-export const createUser = async (user: User): Promise<void> => {
-    try {
-        const response = await fetch('/api/users', {
+        const response = await fetch('/api/users/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -85,11 +45,33 @@ export const createUser = async (user: User): Promise<void> => {
             body: JSON.stringify(user)
         })
         if (!response.ok) {
-            throw new Error('Failed to create user')
+            throw new Error('Failed to register user')
         }
+        return response
     }
     catch (error) {
-        console.error('Error creating user:', error)
+        console.error('Error registering user:', error)
+        throw error
+    }
+}
+
+// login user
+export const loginUser = async (user: IUser): Promise<Response> => {
+    try {
+        const response = await fetch('/api/users/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(user)
+        })
+        if (!response.ok) {
+            throw new Error('Failed to login user')
+        }
+        return response
+    }
+    catch (error) {
+        console.error('Error logging in user:', error)
         throw error
     }
 }

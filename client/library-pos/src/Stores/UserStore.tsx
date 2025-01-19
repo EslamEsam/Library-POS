@@ -2,7 +2,7 @@ import {create} from 'zustand';
 import {createJSONStorage, persist} from 'zustand/middleware';
 
 
-const UsersStore = create (
+const UserStore = create (
     persist(
         (set) => ({
             user : null,
@@ -16,4 +16,4 @@ const UsersStore = create (
     )
 );
 
-export default UsersStore
+export default UserStore

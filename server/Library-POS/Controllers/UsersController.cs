@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace Library_POS.Controllers
@@ -72,6 +73,27 @@ namespace Library_POS.Controllers
                 return BadRequest("Invalid registration attempt2");
             }
         }
+
+        // GET: api/Users
+        [HttpGet]
+        public async Task<ActionResult> GetUsers()
+        {
+            var users = await _userManager.Users.ToListAsync();
+            return Ok(users);
+        }
+
+        // GET: api/Users/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult> GetUser(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(user);
+        }
+
 
     }
 

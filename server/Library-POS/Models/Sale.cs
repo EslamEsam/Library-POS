@@ -19,5 +19,7 @@ namespace Library_POS.Models
         public virtual List<SaleDetail> SaleDetails { get; set; }
         [ValidateNever]
         public virtual Customer Customer { get; set; }
+
+        
     }
 }

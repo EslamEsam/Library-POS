@@ -67,6 +67,16 @@ namespace Library_POS.Migrations
                     b.Property<int>("BookId")
                         .HasColumnType("int");
 
+                    b.Property<int>("BookPrice")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BookQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("BookTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");

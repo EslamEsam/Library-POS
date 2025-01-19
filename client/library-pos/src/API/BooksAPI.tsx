@@ -1,24 +1,15 @@
 // all crud operations are done here for the books
 
-
-interface Book {
-    id: number
-    title: string
-    genre: string
-    author: string
-    year: number
-    quantity: number
-    price: number
-}
+import { IBook } from "../Interfaces/IBook"
 
 // get all books
-export const getBooks = async (): Promise<Book[]> => {
+export const getBooks = async (): Promise<IBook[]> => {
     try {
       const response = await fetch('/api/books')
       if (!response.ok) {
         throw new Error('Failed to fetch books')
       }
-      const data: Book[] = await response.json()
+      const data: IBook[] = await response.json()
       return data
     }
     catch (error) {
@@ -30,13 +21,13 @@ export const getBooks = async (): Promise<Book[]> => {
 
 // get book by id
 export const getBookById = async (id
-    : number): Promise<Book | null> => {
+    : number): Promise<IBook | null> => {
     try {
       const response = await fetch(`/api/books/${id}`)
       if (!response.ok) {
         throw new Error('Failed to fetch book')
       }
-      const data: Book = await response.json()
+      const data: IBook = await response.json()
       return data
     }
     catch (error) {
@@ -46,7 +37,7 @@ export const getBookById = async (id
   }
 
 // update book
-export const updateBook = async (book: Book): Promise<void> => {
+export const updateBook = async (book: IBook): Promise<void> => {
     try {
       const response = await fetch(`/api/books/${book.id}`, {
         method: 'PUT',
@@ -82,7 +73,7 @@ export const deleteBook = async (id: number): Promise<void> => {
   }
 
 // add book
-export const addBook = async (book: Book): Promise<void> => {
+export const addBook = async (book: IBook): Promise<Response> => {
     try {
       const response = await fetch('/api/books', {
         method: 'POST',
@@ -94,6 +85,7 @@ export const addBook = async (book: Book): Promise<void> => {
       if (!response.ok) {
         throw new Error('Failed to add book')
       }
+      return response
     }
     catch (error) {
       console.error('Error adding book:', error)

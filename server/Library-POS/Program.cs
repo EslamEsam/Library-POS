@@ -30,6 +30,8 @@ namespace Library_POS
             builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<ISaleRepository, SaleRepository>();
+            builder.Services.AddScoped<ICartRepository, CartRepository>();
+            builder.Services.AddScoped<ISaleDetailRepository, SaleDetailRepository>();
 
 
 
@@ -55,21 +57,6 @@ namespace Library_POS
             var app = builder.Build();
 
             app.MapIdentityApi<User>();
-
-
-
-            app.MapPost("/api/logout", async (SignInManager<User> signInManager) =>
-            {
-                await signInManager.SignOutAsync();
-                return Results.Ok();
-            }).RequireAuthorization();
-
-            app.MapGet("pingauth" , (ClaimsPrincipal user) =>
-            {
-                var username = user.FindFirstValue(ClaimTypes.Email);
-                return Results.Json(new { Email = username });
-
-            }).RequireAuthorization();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

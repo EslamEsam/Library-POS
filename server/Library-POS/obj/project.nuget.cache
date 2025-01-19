@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "DTeDnBqrV7A=",
+  "dgSpecHash": "K/HwW5W3COM=",
   "success": true,
-  "projectFilePath": "C:\\Users\\eslam\\OneDrive\\Desktop\\LibraryPOS\\server\\Library-POS\\Library-POS.csproj",
+  "projectFilePath": "C:\\Users\\eslam\\OneDrive\\Desktop\\LibraryPOS\\server\\Library-POS\\Souq El Kotob.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\eslam\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\eslam\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

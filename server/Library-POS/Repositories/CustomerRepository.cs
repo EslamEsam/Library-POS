@@ -9,5 +9,12 @@ namespace Library_POS.Repositories
         public CustomerRepository(ApplicationDbContext context) : base(context)
         {
         }
+
+        public async Task AddPurchase(int customerId)
+        {
+            var customer = await _dbSet.FindAsync(customerId);
+            customer.NumberOfPurchases++;
+            await _context.SaveChangesAsync();
+        }
     }
 }

@@ -1,20 +1,16 @@
 // all crud operations are done here for the customers
 
-interface Customer {
-    name: string
-    address: string
-    phoneNumber: string
-    numberOfPurchases: number
-}
+import { ICustomer } from "../Interfaces/ICustomer"
+
 
 // get all customers
-export const getCustomers = async (): Promise<Customer[]> => {
+export const getCustomers = async (): Promise<ICustomer[]> => {
     try {
         const response = await fetch('/api/customers')
         if (!response.ok) {
             throw new Error('Failed to fetch customers')
         }
-        const data: Customer[] = await response.json()
+        const data: ICustomer[] = await response.json()
         return data
     }
     catch (error) {
@@ -24,13 +20,13 @@ export const getCustomers = async (): Promise<Customer[]> => {
 }
 
 // get customer by id
-export const getCustomerById = async (id: number): Promise<Customer | null> => {
+export const getCustomerById = async (id: number): Promise<ICustomer | null> => {
     try {
         const response = await fetch(`/api/customers/${id}`)
         if (!response.ok) {
             throw new Error('Failed to fetch customer')
         }
-        const data: Customer = await response.json()
+        const data: ICustomer = await response.json()
         return data
     }
     catch (error) {
@@ -40,7 +36,7 @@ export const getCustomerById = async (id: number): Promise<Customer | null> => {
 }
 
 // update customer
-export const updateCustomer = async (customer: Customer): Promise<void> => {
+export const updateCustomer = async (customer: ICustomer): Promise<void> => {
     try {
         const response = await fetch(`/api/customers/${customer.name}`, {
             method: 'PUT',
@@ -76,7 +72,7 @@ export const deleteCustomer = async (id: number): Promise<void> => {
 }
 
 // create customer
-export const createCustomer = async (customer: Customer): Promise<void> => {
+export const addCustomer = async (customer: ICustomer): Promise<void> => {
     try {
         const response = await fetch('/api/customers', {
             method: 'POST',
@@ -88,6 +84,7 @@ export const createCustomer = async (customer: Customer): Promise<void> => {
         if (!response.ok) {
             throw new Error('Failed to create customer')
         }
+        console.log('ICustomer created successfully')
     }
     catch (error) {
         console.error('Error creating customer:', error)

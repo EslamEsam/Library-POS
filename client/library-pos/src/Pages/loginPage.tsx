@@ -1,18 +1,22 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import UsersStore from '../store/UsersStore'
+import UsersStore from '../Stores/UserStore'
 import { Button } from "../components/ui/button"
 import { Input } from "../components/ui/input"
 import { Label } from "../components/ui/label"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "../components/ui/card"
 import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert"
 import { AlertCircle } from 'lucide-react'
+import CartStore from '../Stores/CartStore'
+import { getCartByUserId } from '../API/CartAPI'
+import { loginUser } from '../API/UsersAPI'
 
 const LoginPage = () => {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [error, setError] = useState<string>('')
   const setUser = UsersStore((state) => state.setUser)
+  const setCart = CartStore((state) => state.setCart)
 
   const navigate = useNavigate()
 
@@ -25,6 +29,7 @@ const LoginPage = () => {
     }
   }
 
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError('')
@@ -35,16 +40,9 @@ const LoginPage = () => {
     }
 
     try {
-      const response = await fetch('/api/users/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
-      });
+      const userData = { email: email, password: password }
+
+      const response = await loginUser(userData)
 
       if (!response.ok) {
         throw new Error('Failed to login')
@@ -52,9 +50,11 @@ const LoginPage = () => {
 
       const user = await response.json()
       setUser(user)
+      const cart = await getCartByUserId(user.userId)
+      setCart(cart)
       navigate('/')
     } catch (err) {
-      setError('Login failed. Please check your credentials and try again.')
+      setError('Login failed. Please check your credentials and try again.'+err)
     }
   }
 

@@ -4,5 +4,7 @@ namespace Library_POS.Repositories.Interfaces
 {
     public interface ICustomerRepository : IRepository<Customer>
     {
+        Task AddPurchase(int customerId);
     }
+
 }
